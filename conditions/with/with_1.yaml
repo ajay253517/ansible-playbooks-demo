@@ -1,0 +1,19 @@
+---
+- hosts: all
+  vars:
+   f_path: /tmp/hosts
+  tasks:
+  - name: check file exists if not create
+    stat: 
+      path: "{{ f_path }}"
+    register: stat_op
+  - name: creating file if as it doesnt exists
+    file:
+     path: "{{ f_path }}"
+     state: touch
+    when: stat_op.stat.exists == false
+  - name: adding entry to the "{{ f_path }}"
+    shell: echo {{ item }} >> {{ f_path }}
+    with_items:
+    - "{{ ansible_nodename }}"
+    - "{{ ansible_enp0s3.ipv4.address }}"

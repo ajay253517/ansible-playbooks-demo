@@ -1,0 +1,11 @@
+---
+  - hosts: jenkins
+    become: true
+    become_user: root
+    gather_facts: false
+    
+    tasks:
+      - name: Adding line to /etc/hosts
+        lineinfile:
+          path: /etc/hosts
+          line: 192.168.170.205    ansiblecontroller.example.com  ansiblecontroller

@@ -1,0 +1,24 @@
+---
+ - hosts: all
+   become: true 
+   tasks:
+   - name: install httpd and update cache 
+     yum: 
+       name: httpd
+       state: present 
+   - name: enable and restart service
+     service: 
+       name: httpd
+       enabled: yes
+       state: restarted 
+   - name: install php 
+     yum: 
+      name: php 
+      state: present 
+   - name: installing php mysql-modules 
+     yum: 
+      name: php-mysql 
+   - name: enable and restart service
+     service: 
+       name: httpd
+       state: restarted 

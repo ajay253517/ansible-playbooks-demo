@@ -1,0 +1,28 @@
+---
+ - hosts: all
+   tasks:
+    - name: Copying file to remote server 
+      copy:
+        src: /etc/yum.repos.d/dvd.repo
+        dest: /etc/yum.repos.d/
+
+    - name: creating a repo directory
+      file:
+        dest: /mnt/repo
+        state: directory
+
+    - name: Mounting directory
+      mount:
+        path: /mnt/repo
+        src: /dev/sr0
+        state: present
+        fstype: iso9660
+        opts: ro,noauto
+
+    - name: Adding EPEL repos
+      yum_repository:
+        name: epel
+        description: EPEL YUM repo
+        file: external_repos
+        baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+        gpgcheck: no

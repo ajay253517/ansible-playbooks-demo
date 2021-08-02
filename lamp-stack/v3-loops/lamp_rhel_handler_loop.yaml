@@ -1,0 +1,25 @@
+---
+ - hosts: worker
+   become: true 
+   tasks:
+   - name: install httpd and update cache 
+     yum: 
+       name: httpd
+       state: present 
+     notify:
+       - restart-service
+   - name: install php and its modules
+     yum: 
+      name: "{{ item }}"
+      state: present 
+     loop:
+       - php
+       - php-mysql
+     notify:
+       - restart-service
+   handlers:
+    - name: restart-service
+      service: 
+        name: httpd
+        enabled: yes
+        state: restarted

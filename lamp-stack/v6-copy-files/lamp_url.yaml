@@ -1,0 +1,33 @@
+---
+ - hosts: webservers
+   become: true 
+   tasks:
+   - name: install httpd and update cache 
+     package: 
+       name: "{{ package_name }}"
+       state: present 
+     notify:
+       - restart-service
+     when: ansible_facts['os_family'] == "RedHat" or ansible_facts['os_family'] == "Debian"
+   - name: installing php and its modules
+     package: 
+       name: "{{ item }}"
+       state: present
+     loop:
+      - "{{ php_modules }}" 
+     notify:
+       - restart-service
+     when: ansible_facts['os_family'] == "RedHat" or ansible_facts['os_family'] == "Debian"
+   - name: downloading sample php file 
+     get_url:
+       url: https://www.php.net/manual/en/tutorial.php
+       dest: /var/www/html/
+     notify:
+       - restart-service
+   handlers:
+    - name: restart-service
+      service: 
+        name: "{{ package_name }}"
+        state: restarted
+        enabled: yes 
+      when: ansible_facts['os_family'] == "RedHat" or ansible_facts['os_family'] == "Debian"

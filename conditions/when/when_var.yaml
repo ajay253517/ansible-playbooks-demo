@@ -1,0 +1,16 @@
+---
+- hosts: all
+  vars:
+   create_file: true
+  tasks: 
+  - name: example for boolean with when
+    file:
+     path: /tmp/created_when_true
+     state: touch
+    when: create_file
+  - debug:
+      msg: "printing values"
+  - debug:
+      msg: Server {{ ansible_nodename }} belongs to {{ ansible_os_family }}
+  - name: Copy some information to file
+    shell: echo {{ ansible_enp0s3.ipv4.address }} >> /tmp/hosts_info    

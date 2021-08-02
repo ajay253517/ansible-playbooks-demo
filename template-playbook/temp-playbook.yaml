@@ -1,0 +1,23 @@
+---
+  - hosts: centos-server
+    vars: 
+      os_family: "{{ ansible_os_family }}"
+      node_name: "{{ ansible_nodename }}"
+      test_var: user_defined
+    tasks:
+    - name: Installing httpd package
+      yum: name=httpd state=present
+    
+    - name: Copy custom file 
+      template:
+        src: template.j2
+        dest: /var/www/html/index.html
+      notify:
+        - restart httpd
+    
+    - name: Ensure httpd running
+      service: name=httpd state=started 
+    
+    handlers:
+      - name: restart httpd
+        service: name=httpd state=restarted

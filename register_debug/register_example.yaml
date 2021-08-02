@@ -1,0 +1,31 @@
+---
+ - hosts: web-server
+
+   tasks:
+   - name: Verify docker version
+     shell: docker --version
+     register: ver_op
+  
+   - debug: 
+      msg: "printing all values"
+   - debug: var=ver_op
+   - debug:
+      msg: "print stdout values"
+   - debug: 
+      msg="stdout={{ver_op.stdout}}"
+   - debug:
+      msg: "printing stdout lines"
+   - debug:
+      msg="stdout_lines={{ver_op.stdout_lines}}"
+
+   - name: "Failure task examples"
+     shell: java --version
+     register: fail_op
+     ignore_errors: yes
+     
+   - debug: 
+       msg: "printing stderr values"
+   - debug:
+       msg="stderr={{fail_op.stderr}}"
+   - debug:
+       msg="stderr_lines={{fail_op.stderr_lines}}"

@@ -1,0 +1,11 @@
+---
+ - hosts: all
+   become: true
+   tasks:
+    - name: playbook for ignore errors
+      shell: ls -l /etc/new
+      register: com_op
+      ignore_errors: true
+    
+    - debug: 
+        msg: "{{ com_op.stderr }}"

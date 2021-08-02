@@ -1,0 +1,6 @@
+package_name: "apache2" 
+php_modules:
+  - "php"
+  - "php-mysql" 
+  - "libapache2-mod-php"
+  - "php-cli" 

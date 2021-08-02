@@ -1,0 +1,19 @@
+all:
+  hosts:
+    192.168.0.112:
+    192.168.0.110:
+  children: 
+    webservers:
+      hosts:
+        192.168.0.112:
+          package_name: "apache2"
+          php_modules:
+            - "php"
+            - "php-mysql" 
+            - "libapache2-mod-php"
+            - "php-cli"
+        192.168.0.110:
+          package_name: "httpd"
+          php_modules:
+            - "php"
+            - "php-mysql" 

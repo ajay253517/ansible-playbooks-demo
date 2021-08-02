@@ -1,0 +1,45 @@
+---
+ - hosts: all
+   become: yes
+   become_user: root
+
+   tasks:
+    - name: Install httpd package
+      yum : 
+        name: httpd
+        state: latest
+
+    - name: Creating index.html file
+      file:
+        dest: /var/www/html/index.html
+        state: touch
+
+    - name: Creating a block in index file
+      blockinfile:
+        path: /var/www/html/index.html
+        block: |
+          <html>
+          <body>
+             This is site is created using Ansible
+             Welcome to Ansible  !!
+             hosted on {{ansible_hostname}}
+             </body>
+          </html> 
+
+    - name: Changeing server ip
+      lineinfile:
+        dest: /etc/httpd/conf/httpd.conf
+        regexp: '^ServerName*'
+        insertafter: 
+        line: ServerName {{ansible_hostname}}:80
+
+    - name: Restart the service
+      service:
+        name: httpd
+        state: restarted
+
+    - name: Enable Firewall Configurations 
+      firewalld: 
+        port: 80/tcp
+        state: enabled 
+        permanent: yes 

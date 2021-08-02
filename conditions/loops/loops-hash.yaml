@@ -1,0 +1,11 @@
+---
+  - hosts: all
+    tasks:
+     - name: adding users with hashes
+       user:
+         name: "{{ item.name }}"
+         uid: "{{ item.uid }}"
+         state: present
+       loop:
+         - { name: test_user1 , uid: '1005' }
+         - { name: test_user2 , uid: '1006' }

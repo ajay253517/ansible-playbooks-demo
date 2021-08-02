@@ -1,0 +1,10 @@
+---
+ - hosts: all
+   vars:
+    - list_packages: [ "links", "bind-utils", "unzip", "sysstat"]
+   tasks: 
+   - name: Installing system utils 
+     yum: 
+      name: "{{ list_packages }}"
+      state: present
+      

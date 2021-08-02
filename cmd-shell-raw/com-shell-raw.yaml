@@ -1,0 +1,14 @@
+## Playbook using module command, shell and raw.
+---
+ - hosts: all
+   become: true
+   become_user: root
+   tasks:
+    - name: Disable selinux using command module
+      command: setenforce 1
+
+    - name: Creating log file using shell 
+      shell: echo "File created using ansible shell on $(date +%d-%m-%y--%HH-%MM-%SS)" >> /var/log/mem_info 
+
+    - name: Collecting meminfo using raw module
+      raw: cat /proc/meminfo | grep M | head -n 3 >> /var/log/mem_info 

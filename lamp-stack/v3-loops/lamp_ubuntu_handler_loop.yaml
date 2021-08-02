@@ -1,0 +1,27 @@
+---
+ - hosts: all
+   become: true 
+   tasks:
+   - name: install apache2 and update cache 
+     apt: 
+       name: apache2 
+       update_cache: yes
+       state: present 
+     notify:
+       - restart-service
+   - name: install php and modules
+     apt: 
+      name: "{{ item }}" 
+      state: present 
+     loop: 
+      - php
+      - libapache2-mod-php
+      - php-mysql 
+      - php-cli 
+     notify:
+       - restart-service      
+   handlers:
+    - name: restart-service
+      service: 
+        name: apache2
+        state: restarted

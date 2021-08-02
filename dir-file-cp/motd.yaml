@@ -1,0 +1,14 @@
+---
+  - hosts: all
+    become: yes
+    tasks:
+      - name: creating a motd file
+        file:
+          path: /etc/motd
+          state: touch
+      - name: Adding contents to created file
+        blockinfile:
+          path: /etc/motd
+          block: |
+            This is motd file created using Ansible
+            Welcome to Ansible  !!

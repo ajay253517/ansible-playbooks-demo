@@ -1,0 +1,26 @@
+---
+ - hosts: worker
+   become: true 
+   tasks:
+   - name: install httpd and update cache 
+     yum: 
+       name: httpd
+       state: absent 
+     notify:
+       - restart-service
+   - name: install php 
+     yum: 
+      name: php 
+      state: absent 
+   - name: installing php mysql-modules 
+     yum: 
+      name: php-mysql 
+      state: absent
+     notify:
+       - restart-service
+   handlers:
+    - name: restart-service
+      service: 
+        name: httpd
+        enabled: yes
+        state: restarted

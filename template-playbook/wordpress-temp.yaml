@@ -1,0 +1,40 @@
+---
+ - hosts: centos-server
+   become: true
+   become_user: root
+   vars:
+     database_name_here: wordpress
+     username_here: wordpress
+     password_here: secure_password
+
+   tasks:
+   - name: Installing php  
+     yum: name={{item}}
+     with_items:
+       - php
+       - php-common 
+       - php-mysql 
+       - php-gd 
+       - php-xml 
+       - php-mbstring
+       - php-mcrypt
+
+   - name: restart httpd 
+     service: name=httpd state=restarted
+  
+   - name:  download and unarchive wordpress
+     unarchive: 
+       src: http://wordpress.org/latest.tar.gz
+       dest: /tmp
+       remote_src: True
+  
+   - name: Remove html directory 
+     file: path=/var/www/html state=absent 
+
+   - name: Moving unarchive wordpress
+     command: mv /tmp/wordpress /var/www/html
+  
+   - name: Copy configuration file
+     template:
+       src: wp-config-sample.j2 
+       dest: /var/www/html/wp-config.php

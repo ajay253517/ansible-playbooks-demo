@@ -1,0 +1,80 @@
+---
+ - hosts: centos-server
+
+   tasks:
+
+    - name: installing mariadb
+      yum: 
+        name: ['mariadb-server', 'mariadb'] 
+        state: latest
+      tags:
+        - package
+
+    - name: Configuring service
+      service: name=mariadb state=started enabled=yes
+      tags:
+        - service
+
+    - name: Configuring Firewall
+      firewalld: 
+        service: mysql
+        permanent: true
+        state: enabled
+      tags:
+        - firewall
+
+    - name: delete anonymous MySQL server user for {{ ansible_nodename }}
+      mysql_user: 
+        login_user=root
+        login_password='{{ mysql_root }}'
+        check_implicit_admin=yes
+        user=""
+        host={{ item }}
+        state="absent"
+      ignore_errors: true
+      with_items:
+        - ""
+        - "{{ ansible_nodename }}"
+        - localhost
+      tags:
+        - delete_user
+
+    - name: Change root user password on first run
+      mysql_user: 
+        login_user=root
+        login_password="{{ mysql_root }}"
+        check_implicit_admin=yes
+        name=root
+        password={{ mysql_root }}
+        priv=*.*:ALL,GRANT
+        host={{ item }}
+      ignore_errors: true
+      with_items:
+        - "{{ ansible_nodename }}"
+        - 127.0.0.1
+        - ::1
+        - localhost
+      tags:
+        - chpassword
+
+    - name: remove the MySQL test database
+      mysql_db:
+        login_user: root 
+        login_password: "{{ mysql_root }}" 
+        db: test state=absent
+      ignore_errors: true
+      tags:
+        - remove_test
+    
+
+    - name: Creating database for wordpress 
+      mysql_db:
+        name: wordpress
+        state: present
+
+    - name: Creating user for wordpress
+      mysql_user:
+        name: wordpress
+        password: wppass1234
+        priv: '*.*:ALL'
+        state: present

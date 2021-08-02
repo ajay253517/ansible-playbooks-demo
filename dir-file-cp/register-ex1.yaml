@@ -1,0 +1,26 @@
+---
+ - hosts: db-server
+   become: yes
+   become_user: ansible
+   
+   tasks:
+    - name: Verify site
+      shell: curl -s {{ansible_default_ipv4.address}}:80
+      register: comm_op
+
+    - debug: msg="stdout={{ comm_op.stdout }}"
+
+    - name: verify installation
+      shell: java -version
+      register: j_version
+
+    - debug:  msg="Java version {{ j_version.stderr_lines }}"
+
+    - debug:
+         msg: msg="Java home {{ ansible_env.JAVA_HOME }}"
+
+    - name: Printing full output 
+      command: /bin/uptime
+      register: com_op
+
+    - debug: msg="stdout={{ com_op.stdout_lines }}"

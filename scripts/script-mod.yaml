@@ -1,0 +1,5 @@
+---
+ - hosts: web-server
+   tasks:
+   - name: executing shell script
+     script: ./host_script.sh

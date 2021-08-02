@@ -1,0 +1,23 @@
+---
+ - hosts: web-server
+   
+   tasks:
+   - name: Copying the script
+     copy:
+        src: ./host_script.sh
+        dest: /opt/host_script.sh
+        mode: 0755
+   - name: Adding HOSTNAME to the scripts
+     lineinfile:
+      state: present
+      dest: /opt/host_script.sh
+      regexp: '^HOSTNAME='
+      line: HOSTNAME={{ansible_hostname}}
+
+   - name: Executing the scripts
+     command: /opt/host_script.sh 
+     register: script_op
+
+   - debug: var=script_op
+   - debug: 
+      msg="stdout={{script_op.stdout}}"

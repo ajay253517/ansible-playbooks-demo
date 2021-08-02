@@ -1,0 +1,12 @@
+---
+ - hosts: centos-server
+
+   tasks:
+   
+    - name: Creating new database teddy
+      mysql_db:
+      login_host: "{{ ansible_nodename }}"
+      login_user: root
+      login_password: root123$
+      name: teddy
+      state: present
