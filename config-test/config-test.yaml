@@ -1,0 +1,13 @@
+---
+  - hosts: webservers
+    become: False
+    tasks:
+    - name: copy the readme file to /tmp 
+      template:
+        src: readme.txt.j2
+        dest: /tmp/readme.txt
+    
+    - name: copy the readme file to user home directory 
+      template:
+        src: readme.txt.j2
+        dest: "{{ ansible_user_dir }}/readme.txt"

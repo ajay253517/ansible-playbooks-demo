@@ -1,0 +1,26 @@
+---
+  - hosts: webservers
+    pre_tasks:
+      - name: Printing a sample message 
+        debug: 
+          msg: "Running in pre-task"
+    tasks:
+    - name: copy the readme file to /tmp 
+      template:
+        src: readme.txt.j2
+        dest: /tmp/readme.txt
+    
+    - name: copy the readme file to user home directory
+      template:
+        src: readme.txt.j2
+        dest: "{{ ansible_user_dir }}/readme.txt"
+      become: True
+      become_user: ansible
+
+    post_tasks:
+      - name: Cleanup created file in home directory 
+        file: 
+          path: "{{ ansible_user_dir }}/readme.txt"
+          state: absent
+        become: True
+        become_user: ansible
