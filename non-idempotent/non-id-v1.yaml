@@ -1,0 +1,7 @@
+---
+ - hosts: all
+   become: yes
+   tasks:
+   - name: Check connectivity 
+     command: ping -c 4 www.google.com 
+     

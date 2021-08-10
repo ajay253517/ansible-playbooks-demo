@@ -1,0 +1,18 @@
+---
+ - hosts: all
+   become: yes
+   tasks:
+   - name: check if flag exists
+     stat:
+       path: /tmp/success.txt
+     register: flag_status
+   - name: Check connectivity 
+     command: ping -c 4 www.google.com 
+     notify:
+       - create a flag
+     when: flag_status.stat.exists == false
+   handlers:
+   - name: create a flag
+     file: 
+       path: /tmp/success.txt
+       state: touch

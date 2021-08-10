@@ -1,0 +1,6 @@
+---
+# vars file for lamp
+ package_name: httpd
+ php_modules: 
+   - php
+   - php-mysql

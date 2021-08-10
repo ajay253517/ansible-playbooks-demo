@@ -1,0 +1,39 @@
+---
+ - hosts: appserver
+   become: true
+   vars:
+     j_version: java-1.8.0-openjdk-devel
+   tasks:
+   - name: Install jdk 
+     yum:
+       name: "{{ j_version }}"
+       state: latest
+
+   - name: print java version 
+     shell: rpm -qa | grep "{{ j_version }}"
+     register: java_version
+
+   - debug: 
+      msg="stdout={{java_version.stdout}}"
+      
+   - name: setting JAVA_HOME 
+     blockinfile:
+      dest: /home/ansible/.bash_profile 
+      block: |
+        export JAVA_HOME=/usr/lib/jvm/{{ java_version.stdout }}
+        export JRE_HOME=/usr/lib/jvm/{{ java_version.stdout }}/jre
+      insertbefore: "^PATH"
+      backup: yes
+   
+   - name: Installing maven 
+     yum:
+      name: maven
+      state: latest 
+   
+   - name: verify installation 
+     shell: mvn --version 
+     register: mvn_version 
+    
+   - debug: 
+      msg="stdout={{mvn_version.stdout}}"
+     

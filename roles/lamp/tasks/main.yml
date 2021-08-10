@@ -1,0 +1,35 @@
+---
+ - name: Include version-specific variables for CentOS/RHEL.
+   include_vars: "RedHat.yml" 
+   when: ansible_distribution == 'CentOS' or
+         ansible_distribution == 'Red Hat Enterprise Linux' or
+         ansible_distribution == 'RedHat'
+
+ - name: Include version-specific variables for Debian.
+   include_vars: "{{ ansible_os_family|title }}.yml"
+   when: ansible_os_family == 'Debian'
+ 
+ - name: check for running os 
+   fail:
+     msg: Playbook supports only RHEL and Debain 
+   when: ansible_facts['os_family'] != "RedHat" and ansible_facts['os_family'] != "Debian"
+ - name: install httpd and update cache 
+   package: 
+     name: "{{ package_name }}"
+     state: present 
+   notify:
+     - restart-service
+ - name: installing php and its modules
+   package: 
+     name: "{{ item }}"
+     state: present
+   loop:
+     - "{{ php_modules }}" 
+   notify:
+     - restart-service
+ - name: copying sample php file 
+   copy:
+     src: info.php
+     dest: /var/www/html/
+   notify:
+    - restart-service
